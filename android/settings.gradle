@@ -1,0 +1,3 @@
+rootProject.name = 'frames'
+
+include ':app'
