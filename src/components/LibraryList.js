@@ -1,26 +1,29 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import PropTypes from 'prop-types';
+import { FlatList } from 'react-native';
 import { connect } from 'react-redux';
+import ListItem from './ListItem';
 
 class LibraryList extends Component {
+  static propTypes = {
+    libs: PropTypes.arrayOf(PropTypes.shape({}).isRequired).isRequired,
+  }
+
   render() {
     const { libs } = this.props;
 
     return (
-      <View>
-        <Text>{libs.map(({ id, title }) => <Text key={id}>{title}</Text>)} </Text>
-      </View>
+      <FlatList
+        data={libs}
+        renderItem={lib => <ListItem lib={lib} />}
+        keyExtractor={lib => String(lib.id)}
+      />
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log('state: ', state);
-
-  return {
-    libs: state.libraries,
-  };
-};
-
+const mapStateToProps = state => ({
+  libs: state.libraries,
+});
 
 export default connect(mapStateToProps)(LibraryList);

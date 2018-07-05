@@ -14,7 +14,7 @@ const store = createStore(reducers);
 
 const styles = StyleSheet.create({
   container: {
-
+    flex: 1,
   },
 });
 
