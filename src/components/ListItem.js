@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  TouchableWithoutFeedback, View, Text, StyleSheet,
+  LayoutAnimation, TouchableWithoutFeedback, View, Text, StyleSheet,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { CardSection } from './common';
@@ -27,19 +27,25 @@ class ListItem extends Component {
         separators: PropTypes.shape({ }).isRequired,
       }).isRequired,
       selectLibrary: PropTypes.func.isRequired,
-      selectedLibId: PropTypes.number,
+      expandableText: PropTypes.bool,
     }
 
     static defaultProps = {
-      selectedLibId: null,
+      expandableText: false,
+    }
+
+    componentWillUpdate() {
+      LayoutAnimation.spring();
     }
 
     renderDescription = () => {
-      const { lib: { item: { id, description } }, selectedLibId } = this.props;
+      const { lib: { item: { description } }, expandableText } = this.props;
 
-      if (id === selectedLibId) {
+      if (expandableText) {
         return (
-          <Text>{description}</Text>
+          <CardSection>
+            <Text>{description}</Text>
+          </CardSection>
         );
       }
 
@@ -64,8 +70,16 @@ class ListItem extends Component {
     }
 }
 
-const mapStateToProps = state => ({
-  selectedLibId: state.selectedLibId,
-});
+const mapStateToProps = (state, ownProps) => {
+  // .ownProps.lib.item.id
+  const { lib: { item: { id } } } = ownProps;
+  const { selectedLibId } = state;
+
+  const expandableText = selectedLibId === id;
+
+  return {
+    expandableText,
+  };
+};
 
 export default connect(mapStateToProps, actions)(ListItem);
